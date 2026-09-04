@@ -11,7 +11,7 @@ import { env } from "./config/env.js";
 import authRoutes from "./routes/auth.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import reportRoutes from "./routes/report.routes.js";
-
+import dashboardRoutes from "./routes/dashboard.routes.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -44,6 +44,7 @@ app.get(
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 // This must remain after all valid routes
 app.use((_request: Request, response: Response) => {
