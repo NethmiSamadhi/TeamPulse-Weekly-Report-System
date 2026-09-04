@@ -1,0 +1,149 @@
+.report-filters {
+  margin-bottom: 24px;
+  padding: 22px;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 18px;
+  color: #334155;
+}
+
+.filter-title button {
+  margin-left: auto;
+  border: 0;
+  color: #4f46e5;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1.5fr)
+    repeat(5, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.filter-grid select,
+.date-filter,
+.search-field {
+  min-height: 44px;
+  border: 1px solid #dbe3ee;
+  border-radius: 11px;
+  background: #ffffff;
+}
+
+.filter-grid select {
+  padding: 0 11px;
+  color: #475569;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  color: #94a3b8;
+}
+
+.search-field input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+}
+
+.date-filter span {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.date-filter input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: #475569;
+}
+
+.report-result-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 3px 14px;
+  color: #6366f1;
+}
+
+.report-result-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.report-result-heading strong {
+  color: #1e293b;
+}
+
+.report-result-heading span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.reports-table-card {
+  overflow: hidden;
+}
+
+.reports-table td:first-child {
+  display: table-cell;
+}
+
+.reports-table td:first-child strong,
+.reports-table td:first-child span {
+  display: block;
+}
+
+.reports-table td:first-child span {
+  margin-top: 4px;
+}
+
+.project-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-cell i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.view-report-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+@media (max-width: 1250px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
