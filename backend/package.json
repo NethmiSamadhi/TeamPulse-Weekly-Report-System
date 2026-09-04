@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "seed": "prisma db seed"
   },
   "keywords": [],
   "author": "",
@@ -41,5 +42,8 @@
     "@prisma/engines@6.12.0": true,
     "esbuild@0.28.2": true,
     "prisma@6.12.0": true
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }
