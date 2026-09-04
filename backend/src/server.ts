@@ -10,6 +10,8 @@ import morgan from "morgan";
 import { env } from "./config/env.js";
 import authRoutes from "./routes/auth.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import reportRoutes from "./routes/report.routes.js";
+
 
 const app = express();
 const PORT = env.PORT;
@@ -41,6 +43,7 @@ app.get(
 // Authentication endpoints
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
+app.use("/api/reports", reportRoutes);
 
 // This must remain after all valid routes
 app.use((_request: Request, response: Response) => {
