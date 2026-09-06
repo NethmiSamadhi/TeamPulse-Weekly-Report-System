@@ -14,6 +14,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { ReportDetailPage } from "./pages/ReportDetailPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
+import { TeamMembersPage } from "./pages/TeamMembersPage";
 
 export default function App() {
   return (
@@ -72,21 +73,16 @@ export default function App() {
           element={<ReportDetailPage />}
         />
 
-        <Route
-          path="/team"
-          element={
+          <Route
+      path="/team"
+      element={
             <ProtectedRoute
               allowedRoles={["MANAGER", "ADMIN"]}
             >
-              <PlaceholderPage
-                eyebrow="Team management"
-                title="Team members"
-                description="Manage team members and monitor reporting activity."
-              />
+              <TeamMembersPage />
             </ProtectedRoute>
           }
         />
-
        <Route
             path="/projects"
             element={

@@ -1,0 +1,25 @@
+.team-page { padding-bottom: 50px; }
+.team-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 25px; }
+.team-header h1 { margin: 7px 0; color: #111827; font-size: clamp(36px,4vw,48px); letter-spacing: -.045em; }
+.team-header p:last-child { margin: 0; color: #64748b; }
+.team-week-picker { display: grid; gap: 7px; color: #64748b; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.team-week-picker > div { display: flex; align-items: center; gap: 8px; padding: 0 12px; border: 1px solid #d8e0ec; border-radius: 11px; background: #fff; }
+.team-week-picker input { min-height: 44px; border: 0; outline: 0; color: #172033; background: transparent; font: inherit; }
+.team-metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; margin-bottom: 22px; }
+.team-metrics article { padding: 19px; border: 1px solid #e2e8f0; border-radius: 17px; background: #fff; box-shadow: 0 10px 28px rgba(15,23,42,.045); }
+.team-metrics article > span { display: block; margin: 13px 0 6px; color: #64748b; font-size: 12px; font-weight: 700; }
+.team-metrics article > strong { color: #172033; font-size: 28px; }
+.team-metric-icon { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 12px; }
+.team-metric-icon.purple { color: #5147e8; background: #eef0ff; }.team-metric-icon.green { color: #059669; background: #e7f9f2; }.team-metric-icon.orange { color: #d97706; background: #fff7e6; }.team-metric-icon.blue { color: #0284c7; background: #e8f7ff; }
+.team-directory { overflow: hidden; border: 1px solid #e2e8f0; border-radius: 20px; background: #fff; box-shadow: 0 14px 38px rgba(15,23,42,.05); }
+.team-directory-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 23px 25px; border-bottom: 1px solid #e8edf5; }
+.team-directory-header h2 { margin: 5px 0 0; color: #172033; font-size: 22px; }
+.team-filters { display: flex; gap: 10px; }
+.team-search { display: flex; align-items: center; gap: 8px; min-width: 235px; padding: 0 12px; border: 1px solid #d8e0ec; border-radius: 10px; color: #94a3b8; }
+.team-search input { min-height: 40px; border: 0; outline: 0; background: transparent; font: inherit; }
+.team-filters select { min-height: 42px; padding: 0 32px 0 12px; border: 1px solid #d8e0ec; border-radius: 10px; color: #334155; background: #fff; font: inherit; }
+.team-table-wrapper { overflow-x: auto; }.team-table { width: 100%; border-collapse: collapse; }.team-table th { padding: 13px 20px; color: #94a3b8; background: #fafbfe; font-size: 11px; font-weight: 800; text-align: left; text-transform: uppercase; white-space: nowrap; }.team-table td { padding: 17px 20px; border-top: 1px solid #edf1f7; color: #334155; font-size: 14px; vertical-align: middle; }
+.member-identity { display: flex; align-items: center; gap: 12px; min-width: 210px; }.member-avatar { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border-radius: 12px; color: #fff; background: linear-gradient(135deg,#6157f6,#16b7c4); font-size: 12px; font-weight: 800; }.member-identity > div:last-child { display: grid; gap: 5px; }.member-identity strong { color: #172033; }.member-identity span { display: flex; align-items: center; gap: 5px; color: #94a3b8; font-size: 12px; }
+.member-project { display: flex; align-items: center; gap: 8px; min-width: 180px; }.member-project i { width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; }.view-member-report { color: #4f46e5; font-weight: 750; text-decoration: none; white-space: nowrap; }.view-member-report:hover { text-decoration: underline; }.muted-cell { color: #94a3b8; }.team-empty { display: grid; min-height: 240px; place-items: center; align-content: center; gap: 8px; padding: 30px; color: #64748b; text-align: center; }
+@media (max-width: 1100px) { .team-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }.team-directory-header { align-items: stretch; flex-direction: column; }.team-filters { width: 100%; }.team-search { flex: 1; } }
+@media (max-width: 700px) { .team-header { align-items: flex-start; flex-direction: column; }.team-metrics { grid-template-columns: 1fr; }.team-filters { flex-direction: column; }.team-search { min-width: 0; }.team-week-picker { width: 100%; }.team-week-picker > div { justify-content: space-between; } }
