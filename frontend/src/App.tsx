@@ -13,6 +13,7 @@ import { PlaceholderPage } from "./pages/PlaceholderPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ReportDetailPage } from "./pages/ReportDetailPage";
 import { ReportsPage } from "./pages/ReportsPage";
+import { ProjectsPage } from "./pages/ProjectsPage";
 
 export default function App() {
   return (
@@ -86,21 +87,16 @@ export default function App() {
           }
         />
 
-        <Route
-          path="/projects"
-          element={
-            <ProtectedRoute
-              allowedRoles={["MANAGER", "ADMIN"]}
-            >
-              <PlaceholderPage
-                eyebrow="Project management"
-                title="Projects"
-                description="Create and manage TeamPulse projects."
-              />
-            </ProtectedRoute>
-          }
-        />
-
+       <Route
+            path="/projects"
+            element={
+              <ProtectedRoute
+                allowedRoles={["MANAGER", "ADMIN"]}
+              >
+                <ProjectsPage />
+              </ProtectedRoute>
+            }
+          />
         <Route
           path="/users"
           element={
