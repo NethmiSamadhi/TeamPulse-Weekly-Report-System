@@ -5,6 +5,7 @@ import {
   Clock3,
   ListChecks,
   MessageSquare,
+  Pencil,
   Send,
   Trophy,
 } from "lucide-react";
@@ -139,6 +140,9 @@ export function ReportDetailPage() {
   const [isReviewing, setIsReviewing] =
     useState(false);
 
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
+
   const isManager =
     user?.role === "MANAGER" ||
     user?.role === "ADMIN";
@@ -223,6 +227,28 @@ export function ReportDetailPage() {
     }
   }
 
+  async function handleSubmitReport() {
+    if (!reportId) return;
+    setIsSubmitting(true);
+    setError("");
+    setMessage("");
+    try {
+      const response = await api.post<{
+        message: string;
+        data: { report: Report };
+      }>(`/reports/${reportId}/submit`);
+      setReport(response.data.data.report);
+      setMessage(response.data.message);
+    } catch (caught) {
+      const apiMessage = (caught as {
+        response?: { data?: { message?: string } };
+      }).response?.data?.message;
+      setError(apiMessage ?? "The report could not be submitted.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <main className="app-page">
@@ -253,6 +279,11 @@ export function ReportDetailPage() {
       (item) =>
         item.versionNumber === selectedVersion,
     ) ?? report.versions[0];
+
+  const canEdit =
+    user?.id === report.user.id &&
+    (report.status === "DRAFT" ||
+      report.status === "NEEDS_CORRECTION");
 
   return (
     <main className="app-page">
@@ -296,6 +327,41 @@ export function ReportDetailPage() {
           </strong>
         </div>
       </header>
+
+      {canEdit && (
+        <section className="member-report-actions">
+          <div>
+            <strong>
+              {report.status === "NEEDS_CORRECTION"
+                ? "Corrections requested"
+                : "This report is still a draft"}
+            </strong>
+            <span>
+              Edit the content or submit it for manager review.
+            </span>
+          </div>
+
+          <div>
+            <Link
+              className="edit-report-button"
+              to={`/reports/${report.id}/edit`}
+            >
+              <Pencil size={17} />
+              Edit report
+            </Link>
+
+            <button
+              className="submit-report-button"
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => void handleSubmitReport()}
+            >
+              <Send size={17} />
+              {isSubmitting ? "Submitting..." : "Submit report"}
+            </button>
+          </div>
+        </section>
+      )}
 
       {report.latestReviewerComment && (
         <section className="review-notice">

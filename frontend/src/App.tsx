@@ -56,6 +56,17 @@ export default function App() {
         />
 
         <Route
+          path="/reports/:reportId/edit"
+          element={
+            <ProtectedRoute
+              allowedRoles={["TEAM_MEMBER"]}
+            >
+              <NewReportPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/reports/:reportId"
           element={<ReportDetailPage />}
         />

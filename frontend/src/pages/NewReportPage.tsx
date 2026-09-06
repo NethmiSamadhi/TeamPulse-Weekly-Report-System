@@ -1,6 +1,6 @@
 import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { CalendarDays, CheckCircle2, Clock3, FilePlus2, Plus, Save, Send, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../lib/api";
 import "../styles/report-form.css";
 
@@ -24,6 +24,38 @@ type NextTask = { taskName: string; priority: Priority; notes: string };
 type Blocker = { description: string; isKeyIssue: boolean; isResolved: boolean };
 type Achievement = { description: string; isKeyAchievement: boolean };
 type TimeEntry = { category: TimeCategory; minutes: number };
+
+type EditableReport = {
+  id: string;
+  weekStart: string;
+  weekEnd: string;
+  status: string;
+  project: { id: string } | null;
+  versions: Array<{
+    versionNumber: number;
+    optionalNotes: string | null;
+    completedTasks: Array<{
+      id: string;
+      taskName: string;
+      priority: Priority;
+      plannedPercentage: number | string;
+      actualPercentage: number | string;
+      status: TaskStatus;
+      plannedMinutes: number;
+      spentMinutes: number;
+      deliverable: string | null;
+    }>;
+    nextWeekTasks: Array<{
+      id: string;
+      taskName: string;
+      priority: Priority;
+      notes: string | null;
+    }>;
+    blockers: Array<Blocker & { id: string }>;
+    achievements: Array<Achievement & { id: string }>;
+    timeEntries: Array<TimeEntry & { id: string }>;
+  }>;
+};
 
 const emptyTask = (): CompletedTask => ({
   taskName: "", priority: "MEDIUM", plannedPercentage: 100,
@@ -50,6 +82,8 @@ function currentWeek() {
 
 export function NewReportPage() {
   const navigate = useNavigate();
+  const { reportId } = useParams();
+  const isEditing = Boolean(reportId);
   const week = currentWeek();
   const [projects, setProjects] = useState<Project[]>([]);
   const [projectId, setProjectId] = useState("");
@@ -67,19 +101,64 @@ export function NewReportPage() {
   ]);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(isEditing);
 
   useEffect(() => {
-    async function loadProjects() {
+    async function loadPage() {
       try {
         const response = await api.get<{ data: { projects: Project[] } }>("/projects");
         setProjects(response.data.data.projects);
-        if (response.data.data.projects.length) setProjectId(response.data.data.projects[0].id);
+        if (!isEditing && response.data.data.projects.length) {
+          setProjectId(response.data.data.projects[0].id);
+        }
+
+        if (reportId) {
+          const reportResponse = await api.get<{ data: { report: EditableReport } }>(
+            `/reports/${reportId}`,
+          );
+          const report = reportResponse.data.data.report;
+
+          if (report.status !== "DRAFT" && report.status !== "NEEDS_CORRECTION") {
+            setError("Only draft reports or reports needing correction can be edited.");
+            return;
+          }
+
+          const version = report.versions.find(
+            (item) => item.versionNumber === Math.max(...report.versions.map((item) => item.versionNumber)),
+          ) ?? report.versions[0];
+
+          setProjectId(report.project?.id ?? "");
+          setWeekStart(report.weekStart.slice(0, 10));
+          setWeekEnd(report.weekEnd.slice(0, 10));
+          setOptionalNotes(version.optionalNotes ?? "");
+          setTasks(version.completedTasks.length ? version.completedTasks.map(({ id: _id, ...task }) => ({
+            ...task,
+            plannedPercentage: Number(task.plannedPercentage),
+            actualPercentage: Number(task.actualPercentage),
+            deliverable: task.deliverable ?? "",
+          })) : [emptyTask()]);
+          setNextTasks(version.nextWeekTasks.length ? version.nextWeekTasks.map(({ id: _id, ...task }) => ({
+            ...task,
+            notes: task.notes ?? "",
+          })) : [emptyNextTask()]);
+          setBlockers(version.blockers.map(({ id: _id, ...blocker }) => blocker));
+          setAchievements(version.achievements.length ? version.achievements.map(({ id: _id, ...achievement }) => achievement) : [emptyAchievement()]);
+          setTimeEntries(version.timeEntries.length
+            ? version.timeEntries.map(({ id: _id, ...entry }) => entry)
+            : [
+                { category: "DEVELOPMENT", minutes: 0 },
+                { category: "MEETINGS", minutes: 0 },
+                { category: "DOCUMENTATION", minutes: 0 },
+              ]);
+        }
       } catch {
-        setError("Projects could not be loaded.");
+        setError("The report editor could not be loaded.");
+      } finally {
+        setIsLoading(false);
       }
     }
-    void loadProjects();
-  }, []);
+    void loadPage();
+  }, [isEditing, reportId]);
 
   function updateItem<T>(items: T[], index: number, changes: Partial<T>, setter: (value: T[]) => void) {
     setter(items.map((item, itemIndex) => itemIndex === index ? { ...item, ...changes } : item));
@@ -107,10 +186,12 @@ export function NewReportPage() {
     setIsSaving(true);
     setError("");
     try {
-      const response = await api.post<{ data: { report: { id: string } } }>("/reports", payload());
-      const reportId = response.data.data.report.id;
-      if (submitAfterSaving) await api.post(`/reports/${reportId}/submit`);
-      navigate(`/reports/${reportId}`);
+      const response = isEditing
+        ? await api.put<{ data: { report: { id: string } } }>(`/reports/${reportId}`, payload())
+        : await api.post<{ data: { report: { id: string } } }>("/reports", payload());
+      const savedReportId = response.data.data.report.id;
+      if (submitAfterSaving) await api.post(`/reports/${savedReportId}/submit`);
+      navigate(`/reports/${savedReportId}`);
     } catch (caught) {
       const apiMessage = (caught as { response?: { data?: { message?: string } } }).response?.data?.message;
       setError(apiMessage ?? "The report could not be saved. Check all required fields.");
@@ -124,13 +205,17 @@ export function NewReportPage() {
     void saveReport(false);
   }
 
+  if (isLoading) {
+    return <main className="app-page"><section className="content-card form-section"><p>Loading report editor...</p></section></main>;
+  }
+
   return (
     <main className="app-page report-form-page">
       <header className="report-form-header">
         <div>
           <p className="eyebrow">Team member workspace</p>
-          <h1>Create weekly report</h1>
-          <p>Capture your progress, outcomes, challenges and plan for the next week.</p>
+          <h1>{isEditing ? "Edit weekly report" : "Create weekly report"}</h1>
+          <p>{isEditing ? "Update this report before submitting it for manager review." : "Capture your progress, outcomes, challenges and plan for the next week."}</p>
         </div>
         <div className="report-form-header-icon"><FilePlus2 size={27} /></div>
       </header>
@@ -199,8 +284,8 @@ export function NewReportPage() {
         </section>
 
         <div className="report-form-actions">
-          <button className="secondary-form-button" type="submit" disabled={isSaving}><Save size={18} />{isSaving ? "Saving..." : "Save draft"}</button>
-          <button className="primary-form-button" type="button" disabled={isSaving} onClick={() => void saveReport(true)}><Send size={18} />Save and submit</button>
+          <button className="secondary-form-button" type="submit" disabled={isSaving}><Save size={18} />{isSaving ? "Saving..." : isEditing ? "Save changes" : "Save draft"}</button>
+          <button className="primary-form-button" type="button" disabled={isSaving} onClick={() => void saveReport(true)}><Send size={18} />{isEditing ? "Save and submit" : "Save and submit"}</button>
         </div>
       </form>
     </main>
