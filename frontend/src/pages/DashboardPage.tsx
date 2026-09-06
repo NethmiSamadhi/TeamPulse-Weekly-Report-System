@@ -25,6 +25,11 @@ import {
 } from "recharts";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/api";
+import {
+  SmartDashboardInsights,
+  type AttentionMember,
+  type SmartInsight,
+} from "../components/SmartDashboardInsights";
 
 type DashboardData = {
   selectedWeek: {
@@ -72,6 +77,8 @@ type DashboardData = {
     minutes: number;
     hours: number;
   }>;
+  insights: SmartInsight[];
+  attentionRequired: AttentionMember[];
   recentActivity: Array<{
     id: string;
     action: string;
@@ -83,7 +90,6 @@ type DashboardData = {
       role: string;
     };
   }>;
-};
 
 type MemberReport = {
   id: string;
@@ -407,6 +413,10 @@ function ManagerDashboard() {
         </article>
       </section>
 
+      <SmartDashboardInsights
+  insights={dashboard.insights}
+  attentionRequired={dashboard.attentionRequired}
+  />
       <section className="dashboard-panels">
         <article className="content-card dashboard-panel">
           <div className="panel-heading">
