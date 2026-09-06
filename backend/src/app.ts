@@ -1,0 +1,66 @@
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
+import helmet from "helmet";
+import morgan from "morgan";
+import { env } from "./config/env.js";
+import authRoutes from "./routes/auth.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import projectRoutes from "./routes/project.routes.js";
+import reportRoutes from "./routes/report.routes.js";
+
+export const app = express();
+
+app.use(helmet());
+app.use(
+  cors({
+    origin: env.FRONTEND_URL,
+    credentials: true,
+  }),
+);
+app.use(express.json({ limit: "1mb" }));
+app.use(cookieParser());
+app.use(morgan("dev"));
+
+app.get(
+  "/api/health",
+  (_request: Request, response: Response) => {
+    response.status(200).json({
+      success: true,
+      message: "TeamPulse API is running",
+      timestamp: new Date().toISOString(),
+    });
+  },
+);
+
+app.use("/api/auth", authRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+
+app.use((_request: Request, response: Response) => {
+  response.status(404).json({
+    success: false,
+    message: "API endpoint not found",
+  });
+});
+
+app.use(
+  (
+    error: Error,
+    _request: Request,
+    response: Response,
+    _next: NextFunction,
+  ) => {
+    console.error(error);
+
+    response.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  },
+);

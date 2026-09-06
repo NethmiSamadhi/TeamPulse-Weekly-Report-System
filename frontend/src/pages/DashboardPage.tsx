@@ -90,6 +90,7 @@ type DashboardData = {
       role: string;
     };
   }>;
+};
 
 type MemberReport = {
   id: string;
