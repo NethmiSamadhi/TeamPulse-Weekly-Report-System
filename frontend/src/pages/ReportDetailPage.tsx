@@ -5,7 +5,8 @@ import {
   Clock3,
   ListChecks,
   MessageSquare,
-  Pencil,
+ Pencil,
+  Printer,
   Send,
   Trophy,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/api";
 import "../styles/report-detail.css";
+import "../styles/report-print.css";
 
 type CompletedTask = {
   id: string;
@@ -286,7 +288,15 @@ export function ReportDetailPage() {
       report.status === "NEEDS_CORRECTION");
 
   return (
-    <main className="app-page">
+  <main className="app-page">
+    <div className="print-document-label">
+      <strong>TeamPulse Weekly Report</strong>
+      <span>
+        Generated{" "}
+        {new Date().toLocaleDateString("en-GB")}
+      </span>
+    </div>
+
       <Link
         className="back-link"
         to="/reports"
@@ -325,6 +335,14 @@ export function ReportDetailPage() {
             {report.project?.name ??
               "No project"}
           </strong>
+          <button
+            className="print-report-button"
+            type="button"
+            onClick={() => window.print()}
+          >
+            <Printer size={17} />
+            Export PDF
+          </button>
         </div>
       </header>
 
