@@ -20,6 +20,13 @@ const environmentSchema = z.object({
   JWT_SECRET: z
     .string()
     .min(32, "JWT_SECRET must contain at least 32 characters"),
+
+  GEMINI_API_KEY: z.preprocess(
+    (value) => value === "" ? undefined : value,
+    z.string().trim().min(1).optional(),
+  ),
+
+  GEMINI_MODEL: z.string().trim().min(1).default("gemini-2.5-flash"),
 });
 
 const result = environmentSchema.safeParse(process.env);

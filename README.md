@@ -35,6 +35,7 @@ Managers can leave correction comments, request changes, approve reports, and in
 - Report search and filtering
 - Project creation, editing, and archiving
 - Team-member search and status filtering
+- Manager-only TeamPulse Insights assistant for report Q&A, weekly summaries, blocker analysis, and workload observations
 
 ## Technology Stack
 
@@ -96,6 +97,10 @@ Create backend/.env with values matching your environment:
     PORT=5000
     FRONTEND_URL="http://localhost:5173"
     NODE_ENV="development"
+    GEMINI_API_KEY="your-google-ai-studio-key"
+    GEMINI_MODEL="gemini-2.5-flash"
+
+`GEMINI_API_KEY` is optional. Without it, the assistant remains usable through a clearly labelled local analytics fallback. Never commit the real key.
 
 Prepare and run the backend:
 
@@ -149,6 +154,7 @@ Additional seeded users are available in backend/prisma/seed.ts.
 | PUT | /api/reports/:reportId | Update a draft or returned report |
 | POST | /api/reports/:reportId/submit | Submit or resubmit a report |
 | POST | /api/reports/:reportId/review | Approve or request changes |
+| POST | /api/assistant/ask | Ask a manager-only question about the selected week's reports |
 
 ## Validation and Security
 
@@ -160,6 +166,8 @@ Additional seeded users are available in backend/prisma/seed.ts.
 - Backend middleware checks authentication, roles, and report ownership.
 - Helmet supplies common security headers.
 - Sensitive environment files are excluded from Git.
+- The assistant sends only selected-week report content to Gemini; account emails, credentials, tokens, and raw database access are excluded.
+- AI output is advisory and explicitly asks managers to verify suggestions before acting.
 
 ## Production Build
 

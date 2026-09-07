@@ -35,4 +35,13 @@ describe("TeamPulse API", () => {
       expect(response.body.success).toBe(false);
     },
   );
+
+  it("rejects unauthenticated AI assistant questions", async () => {
+    const response = await request(app)
+      .post("/api/assistant/ask")
+      .send({ question: "Summarize the team", weekStart: "2026-08-31" });
+
+    expect(response.status).toBe(401);
+    expect(response.body.success).toBe(false);
+  });
 });

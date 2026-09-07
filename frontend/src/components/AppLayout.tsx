@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import {
-  NavLink,
+  Link,
   Outlet,
   useLocation,
   useNavigate,
@@ -171,7 +171,7 @@ export function AppLayout() {
               isNavigationActive(item);
 
             return (
-              <NavLink
+              <Link
                 key={`${item.path}-${item.label}`}
                 to={item.path}
                 onClick={() =>
@@ -185,7 +185,7 @@ export function AppLayout() {
               >
                 <Icon size={19} />
                 <span>{item.label}</span>
-              </NavLink>
+              </Link>
             );
           })}
         </nav>

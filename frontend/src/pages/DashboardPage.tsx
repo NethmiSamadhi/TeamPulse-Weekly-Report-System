@@ -30,6 +30,7 @@ import {
   type AttentionMember,
   type SmartInsight,
 } from "../components/SmartDashboardInsights";
+import { TeamInsightsAssistant } from "../components/TeamInsightsAssistant";
 
 type DashboardData = {
   selectedWeek: {
@@ -415,9 +416,9 @@ function ManagerDashboard() {
       </section>
 
       <SmartDashboardInsights
-  insights={dashboard.insights}
-  attentionRequired={dashboard.attentionRequired}
-  />
+        insights={dashboard.insights}
+        attentionRequired={dashboard.attentionRequired}
+      />
       <section className="dashboard-panels">
         <article className="content-card dashboard-panel">
           <div className="panel-heading">
@@ -565,6 +566,7 @@ function ManagerDashboard() {
           </div>
         </article>
       </section>
+      <TeamInsightsAssistant weekStart={weekStart} />
     </main>
   );
 }
