@@ -183,6 +183,26 @@ Frontend:
 
 The Vite chunk-size message is an optimization warning and does not mean the build failed.
 
+## Automated Tests
+
+The backend includes API tests using Vitest and Supertest.
+
+From the repository root, run:
+
+```sh
+cd backend
+npm test
+```
+
+For watch mode while developing:
+
+```sh
+npm run test:watch
+```
+
+The current tests check the health endpoint, unknown API routes,
+and rejection of unauthenticated requests to protected endpoints.
+
 ## Demonstration Workflow
 
 1. Log in as a team member.
@@ -204,7 +224,7 @@ The Vite chunk-size message is an optimization warning and does not mean the bui
 - PDF and Excel exports
 - Advanced cross-week analytics
 - Report attachments
-- Automated tests and continuous integration
+- Expand automated test coverage and add continuous integration
 - Route-level code splitting
 - Cloud deployment
 
